@@ -10,6 +10,9 @@ import lombok.*;
 @Table(name = "users")
 public class User {
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
