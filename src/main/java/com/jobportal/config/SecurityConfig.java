@@ -48,12 +48,22 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
+                        //public api
                         .requestMatchers("/auth/**")
                         .permitAll()
 
+                        //swagger api
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        )
+                        .permitAll()
+
+                        // recruiter api
                         .requestMatchers("/jobs/**")
                         .hasRole("RECRUITER")
 
+                        //User api
                         .requestMatchers("/applications/**")
                         .hasRole("USER")
 

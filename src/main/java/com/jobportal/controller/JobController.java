@@ -3,6 +3,7 @@ package com.jobportal.controller;
 import com.jobportal.dto.JobRequest;
 import com.jobportal.entity.Job;
 import com.jobportal.service.JobService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,9 @@ public class JobController {
         this.jobService = jobService;
     }
 
+    @Operation(
+            summary = "Create Job"
+    )
     @PostMapping
     public Job createJob(
             @Valid @RequestBody JobRequest request
@@ -33,6 +37,9 @@ public class JobController {
         return jobService.createJob(job);
     }
 
+    @Operation(
+            summary = "Get All Jobs"
+    )
     @GetMapping
     public List<Job> getAllJobs(){
 
@@ -45,6 +52,9 @@ public class JobController {
         return jobService.getJobById(id);
     }
 
+    @Operation(
+            summary = "Search Jobs"
+    )
     @GetMapping("/search")
     public Page<Job> searchJobs(
             @RequestParam String keyword,
