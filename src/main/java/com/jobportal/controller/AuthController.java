@@ -4,6 +4,8 @@ import com.jobportal.Security.JwtUtil;
 import com.jobportal.dto.RegisterRequest;
 import com.jobportal.entity.User;
 import com.jobportal.service.UserService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @RestController
 @RequestMapping("/auth")
-@Tag(name = "Authentication", description = "User Authentication APIs")
 public class AuthController {
 
     private final UserRepository userRepository;
@@ -56,7 +57,8 @@ public class AuthController {
     }
 
     @Operation(
-            summary = "Login and Generate JWT token"
+            summary = "Login and Generate JWT token",
+            description = "Authenticates the user and return a JWT token."
     )
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request) {
