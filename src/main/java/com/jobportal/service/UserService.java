@@ -6,11 +6,16 @@ import com.jobportal.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 @Service
 public class UserService {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(UserService.class);
 
     private final CloudinaryService cloudinaryService;
     private final UserRepository userRepository;
@@ -26,11 +31,22 @@ public class UserService {
     }
 
     public User saveUser(User user) {
+
+        logger.info("Registering new user with email: {}", user.getEmail());
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+
+        User savedUser = userRepository.save(user);
+
+        logger.info("User registered successfully. User ID: {}", savedUser.getId());
+
+        return savedUser;
     }
 
     public List<User> getAllUsers() {
+
+        logger.info("Fetching all users");
+
         return userRepository.findAll();
     }
 
@@ -39,22 +55,24 @@ public class UserService {
             MultipartFile file
     ) throws Exception {
 
-        User user =
-                userRepository.findById(userId)
-                        .orElseThrow(
-                                () -> new RuntimeException(
-                                        "User not found"
-                                )
-                        );
+        logger.info("Resume upload requested for userId: {}", userId);
 
-        String url =
-                cloudinaryService.uploadResume(file);
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setResumeUrl(url);
+            String url = cloudinaryService.uploadResume(file);
 
-        userRepository.save(user);
+            user.setResumeUrl(url);
+            userRepository.save(user);
 
-        return url;
+            logger.info("Resume upload successful for userId: {}", userId);
+
+            return url;
+        } catch (Exception e) {
+            logger.error("Resume  upload failed for userId: {}", userId, e);
+
+            throw e;
+        }
     }
-
 }

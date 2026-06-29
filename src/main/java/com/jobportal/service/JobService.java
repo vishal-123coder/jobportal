@@ -3,6 +3,8 @@ package com.jobportal.service;
 import com.jobportal.entity.Job;
 import com.jobportal.exception.ResourceNotFoundException;
 import com.jobportal.repository.JobRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +15,8 @@ import java.util.List;
 @Service
 public class JobService {
 
+    private static final Logger logger = LoggerFactory.getLogger(JobService.class);
+
     private final JobRepository jobRepository;
 
     public JobService(JobRepository jobRepository) {
@@ -20,7 +24,14 @@ public class JobService {
     }
 
     public Job createJob(Job job){
-        return jobRepository.save(job);
+
+        logger.info("creating job: {}", job.getTitle());
+
+        Job savedJob = jobRepository.save(job);
+
+        logger.info("Job created successfully: {}", savedJob.getId());
+
+        return savedJob;
     }
 
     public List<Job> getAllJobs(){
